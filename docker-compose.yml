@@ -2,14 +2,14 @@ version: "3.8"
 
 services:
   localstack:
-    image: localstack/localstack:latest
+    image: localstack/localstack
     ports:
       # - "53:53"
       # - "443:443"
       - "4510-4520:4510-4520"
       - "4566-4620:4566-4620"
     environment:
-      - SERVICES=s3,sqs,sns,lambda
+      - SERVICES=s3,sqs,sns,lambda,iam
       - DEFAULT_REGION=us-east-1
       - LAMBDA_EXECUTOR=docker
       - LAMBDA_REMOTE_DOCKER=true
@@ -17,6 +17,11 @@ services:
       - DATA_DIR=/tmp/localstack/data
       - DEBUG=1
       - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_DEFAULT_REGION=sa-east-1
+      - AWS_ACCESS_KEY_ID=fakeAccessKeyId
+      - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
+      - AWS_SESSION_TOKEN=fakeToken
+      - DEFAULT_REGION=sa-east-1
     volumes:
       - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
@@ -26,12 +31,14 @@ services:
     networks:
       - localstack
 
-  # test-lambda:
-  #   image: test-lambda:latest
-  #   build:
-  #     context: ./lambdas/python-lambda
-  #   networks:
-  #     - localstack
+  test-lambda:
+    image: test-lambda:latest
+    ports:
+      - 9000:8080
+    build:
+      context: ./lambdas/python
+    networks:
+      - localstack
 
 networks:
   localstack:
