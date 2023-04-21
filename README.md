@@ -25,7 +25,30 @@ $ curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" 
 ----
 
 To test 
+https://www.linkedin.com/pulse/testando-e-debugando-fun%C3%A7%C3%B5es-lambda-em-python-localmente-gleyton-lima/?originalSubdomain=pt
 
-docker-compose up
+docker-compose up localstack
 
-aws --endpoint-url=http://localhost:4566 lambda create-function --function-name test-lambda --code ImageUri=test-lambda:latest --role arn:aws:iam::000000000000:role/lambda-role
+
+Enter on folder lambdas/python/src
+
+aws lambda create-function \
+    --endpoint=http://localhost:4566 \
+    --function-name minha-funcao \
+    --runtime python3.8 \
+    --zip-file fileb://handler.zip \
+    --handler handler.handle \
+    --role arn:aws:iam::000000000000:role/lambda-role
+
+List function 
+aws lambda list-functions \
+    --endpoint=http://localhost:4566
+
+aws lambda invoke \
+    --endpoint=http://localhost:4566 \
+    --function-name minha-funcao \
+    --payload fileb://event.json \
+    response.json
+
+-- Próximos passos
+Criar um pacote com a lambda incluindo requirements

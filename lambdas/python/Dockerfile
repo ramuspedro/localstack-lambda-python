@@ -8,4 +8,4 @@ RUN pip install -r ${LAMBDA_TASK_ROOT}/requirements.txt --quiet
 
 COPY src/ ${LAMBDA_TASK_ROOT}
 
-CMD ["handler.handler"]
+CMD ["handler.handle"]
